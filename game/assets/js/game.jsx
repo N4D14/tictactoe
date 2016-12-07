@@ -1,4 +1,14 @@
+import { sample } from 'underscore';
 import React from 'react';
+
+// TODO: move to server and implement game tree
+function engine(squares) {
+  let emptySquares = [];
+  for (let i=0; i < squares.length; i++) {
+    if (!squares[i]) emptySquares.push(i);
+  }
+  return sample(emptySquares);
+}
 
 function determineWinner(squares) {
   // Check rows
@@ -40,7 +50,8 @@ function Square(props) {
 
 class Board extends React.Component {
   renderSquare(i) {
-    return <Square 
+    return <Square
+      key={`square-${i}`} 
       value={this.props.squares[i]} 
       onClick={() => this.props.onClick(i)}
     />;
@@ -58,7 +69,8 @@ class Board extends React.Component {
     let boardRows = [];
     for (let i=0; i<9; i += 3) {
       boardRows.push(
-        <div className="board-row">
+        <div key={`board-row-${i}`} 
+          className="board-row">
           {this.renderRow(i)}
         </div>
       );
@@ -135,4 +147,10 @@ export class Game extends React.Component {
     })
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (!this.state.xIsNext) {
+      const j = engine(this.state.squares);
+      this.handleClick(j);
+    }
+  }
 }
