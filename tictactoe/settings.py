@@ -37,13 +37,15 @@ WEBPACK_LOADER = {
 }
 
 INSTALLED_APPS = [
-    'game',
+    'game.apps.GameConfig',
+    'engine.apps.EngineConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     'webpack_loader',
 ]
 

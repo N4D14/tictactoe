@@ -1,15 +1,6 @@
 import { sample } from 'underscore';
 import React from 'react';
 
-// TODO: move to server and implement game tree
-function engine(squares) {
-  let emptySquares = [];
-  for (let i=0; i < squares.length; i++) {
-    if (!squares[i]) emptySquares.push(i);
-  }
-  return sample(emptySquares);
-}
-
 function determineWinner(squares) {
   // Check rows
   for (let i = 0; i < squares.length; i += 3) {
@@ -148,9 +139,25 @@ export class Game extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (!this.state.xIsNext) {
-      const j = engine(this.state.squares);
-      this.handleClick(j);
+    if (!determineWinner(this.state.squares) && !this.state.xIsNext) {
+      fetch('/api/engine.json', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          next_player: this.nextPlayer(),
+          squares: this.state.squares,
+        })
+      }).then(function(response) {
+        return response.json();
+      }).then((board) => {this.setState({
+          squares: board.squares,
+          xIsNext: board.next_player === 'X' ? true : false
+        })
+      }).catch(function(ex) {
+        console.log('parsing failed', ex);
+      });
     }
   }
 }
