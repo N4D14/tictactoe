@@ -1,36 +1,7 @@
 import { sample } from 'underscore';
 import React from 'react';
 
-function determineWinner(squares) {
-  // Check rows
-  for (let i = 0; i < squares.length; i += 3) {
-    if (squares[i] && squares[i] === squares[i+1] && squares[i] === squares[i+2]) {
-      return squares[i]
-    }
-  }
-  // Check columns
-  for (let i = 0; i < 3; i++) {
-    if (squares[i] && squares[i] === squares[i+3] && squares[i] === squares[i+6]) {
-      return squares[i]
-    }
-  }
-  // Check Diagonals
-  if (squares[0] && squares[0] === squares[4] && squares[0] === squares[8]) {
-    return squares[0]
-  }
-  if (squares[2] && squares[2] === squares[4] && squares[2] === squares[6]) {
-    return squares[2]
-  }
-  // Check for a Draw
-  let full = true;
-  for (let i=0; i < squares.length; i++) {
-    if (!squares[i]) full = false;
-  }
-  if (full) return 'Draw';
-
-  return null
-}
-
+// Function to render a square on the tic tac toe board
 function Square(props) {
   return (
     <button className="square" onClick={() => props.onClick()}>
@@ -39,7 +10,9 @@ function Square(props) {
   );
 }
 
+// Render main board
 class Board extends React.Component {
+  // Render a single square and pass click function
   renderSquare(i) {
     return <Square
       key={`square-${i}`} 
@@ -48,6 +21,7 @@ class Board extends React.Component {
     />;
   }
 
+  // Render a single row
   renderRow(i) {
     let rowSquares = [];
     for(let j = i; j < i+3; j++) {
@@ -56,6 +30,7 @@ class Board extends React.Component {
     return rowSquares;
   }
 
+  // Render the rows in a loop
   renderRows() {
     let boardRows = [];
     for (let i=0; i<9; i += 3) {
@@ -69,6 +44,7 @@ class Board extends React.Component {
     return boardRows;
   }
 
+  // Render the board
   render() {
     return (
       <div>
@@ -78,6 +54,7 @@ class Board extends React.Component {
   }
 }
 
+// Main game class contatins state of board and turn
 export class Game extends React.Component {
   constructor() {
     super();
@@ -87,8 +64,9 @@ export class Game extends React.Component {
     };
   }
 
+  // Render the game and pass state and click function
   render() {
-    const winner = determineWinner(this.state.squares);
+    const winner = this.determineWinner(this.state.squares);
 
     let status;
     if (winner) {
@@ -114,9 +92,10 @@ export class Game extends React.Component {
     );
   }
 
+  // Handle user click on squaress
   handleClick(i) {
     const squares = this.state.squares.slice();
-    if (determineWinner(squares) || squares[i]) {
+    if (this.determineWinner(squares) || squares[i] || !this.state.xIsNext) {
       return;
     }
 
@@ -127,10 +106,12 @@ export class Game extends React.Component {
     });
   }
 
+  // Get the next player string
   nextPlayer() {
     return this.state.xIsNext ? 'X' : 'O';
   }
 
+  // Reset the board (at any time)
   reset() {
     this.setState({
       squares: Array(9).fill(null),
@@ -138,8 +119,9 @@ export class Game extends React.Component {
     })
   }
 
+  // Following a board update play the computer's turn if necessary
   componentDidUpdate(prevProps, prevState) {
-    if (!determineWinner(this.state.squares) && !this.state.xIsNext) {
+    if (!this.determineWinner(this.state.squares) && !this.state.xIsNext) {
       fetch('/api/engine.json', {
         method: 'POST',
         headers: {
@@ -159,5 +141,36 @@ export class Game extends React.Component {
         console.log('parsing failed', ex);
       });
     }
+  }
+
+  // Determine if the current game state has provided a winner or a draw
+  determineWinner(squares) {
+    // Check rows
+    for (let i = 0; i < squares.length; i += 3) {
+      if (squares[i] && squares[i] === squares[i+1] && squares[i] === squares[i+2]) {
+        return squares[i]
+      }
+    }
+    // Check columns
+    for (let i = 0; i < 3; i++) {
+      if (squares[i] && squares[i] === squares[i+3] && squares[i] === squares[i+6]) {
+        return squares[i]
+      }
+    }
+    // Check Diagonals
+    if (squares[0] && squares[0] === squares[4] && squares[0] === squares[8]) {
+      return squares[0]
+    }
+    if (squares[2] && squares[2] === squares[4] && squares[2] === squares[6]) {
+      return squares[2]
+    }
+    // Check for a Draw
+    let full = true;
+    for (let i=0; i < squares.length; i++) {
+      if (!squares[i]) full = false;
+    }
+    if (full) return 'Draw';
+
+    return null
   }
 }
