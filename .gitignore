@@ -8,4 +8,10 @@ webpack-stats.json
 node_modules/
 bundles/
 
+# Django stuff
 *.sqlite3
+static/
+
+## GAE stuff
+app.yaml
+settings_prod.py

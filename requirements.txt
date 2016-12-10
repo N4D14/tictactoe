@@ -1,5 +1,8 @@
 Django==1.10.4
+django-extensions==1.7.5
 django-filter==1.0.1
 django-webpack-loader==0.4.1
 djangorestframework==3.5.3
+gunicorn==19.6.0
 Markdown==2.6.7
+six==1.10.0

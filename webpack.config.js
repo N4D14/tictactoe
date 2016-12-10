@@ -5,7 +5,7 @@ var BundleTracker = require('webpack-bundle-tracker')
 module.exports = {
   context: __dirname,
 
-  entry: './game/assets/js/index', // entry point of our app
+  entry: ['whatwg-fetch', './game/assets/js/index',], // entry point of our app
 
   output: {
       path: path.resolve('./game/assets/bundles/'),

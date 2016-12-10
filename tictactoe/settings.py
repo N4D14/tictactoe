@@ -25,8 +25,7 @@ SECRET_KEY = 'b*5v885j+f)6$klzdx#icf#^q)ylnj-02i#6o1%084lmqwddn_'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 WEBPACK_LOADER = {
@@ -47,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'webpack_loader',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -131,3 +131,4 @@ STATICFILES_DIRS = (
 )
 
 STATIC_URL = '/static/'
+STATIC_ROOT = 'static/'
