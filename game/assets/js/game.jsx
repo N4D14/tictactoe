@@ -52,11 +52,7 @@ class Board extends React.Component {
         {this.renderRows()}
       </div>
     );
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    console.log('Board updated')
-  }  
+  } 
 }
 
 // Main game class contatins state of board and turn
@@ -126,7 +122,6 @@ export class Game extends React.Component {
 
   // Following a board update play the computer's turn if necessary
   componentDidUpdate(prevProps, prevState) {
-    console.log('Game updated')
     if (!this.determineWinner(this.state.squares) && !this.state.xIsNext) {
       fetch('/api/engine.json', {
         method: 'POST',
